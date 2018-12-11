@@ -1,7 +1,7 @@
 package apis
 
 import (
-	"github.com/kubedge/kubedge-operator/pkg/apis/blinkt/v1alpha1"
+	"github.com/kubedge/kubedge-operator/pkg/apis/arpscan/v1alpha1"
 )
 
 func init() {

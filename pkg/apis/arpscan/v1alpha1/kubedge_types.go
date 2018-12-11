@@ -9,10 +9,11 @@ import (
 
 // KubedgeSpec defines the desired state of Kubedge
 type KubedgeSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
-	// Color is the color of the blinkt deployment
-	Color string `json:"string"`
+	// Size is the size of the arpscan deployment
+	Size int32 `json:"size"`
+
+	// Interface is the interface of the arpscan deployment
+	Interface string `json:"string"`
 }
 
 // KubedgeStatus defines the observed state of Kubedge
@@ -20,7 +21,7 @@ type KubedgeStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 
-	// Nodes are the names of the blinkt pods
+	// Nodes are the names of the arpscan pods
 	Nodes []string `json:"nodes"`
 }
 

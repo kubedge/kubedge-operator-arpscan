@@ -1,9 +1,9 @@
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
-  name: kubedges.blinkt.kubedge.cloud
+  name: kubedges.arpscan.kubedge.cloud
 spec:
-  group: blinkt.kubedge.cloud
+  group: arpscan.kubedge.cloud
   names:
     kind: Kubedge
     listKind: KubedgeList

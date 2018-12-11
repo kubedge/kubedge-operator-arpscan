@@ -39,7 +39,7 @@ rules:
   - get
   - create
 - apiGroups:
-  - blinkt.kubedge.cloud
+  - arpscan.kubedge.cloud
   resources:
   - '*'
   verbs:
