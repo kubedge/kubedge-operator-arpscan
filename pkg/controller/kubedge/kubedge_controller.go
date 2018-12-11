@@ -205,12 +205,12 @@ func (r *ReconcileKubedge) deploymentForKubedge(m *arpscanv1alpha1.Kubedge) *app
 				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{{
-						Image:   "kubedge:1.4.36-alpine",
-						Name:    "kubedge",
-						Command: []string{"kubedge"},
+						Image:   "hack4easy/arpscan-amd64:latest",
+						Name:    "arpscan",
+						Command: []string{"/bin/arpscan", "eth0"},
 						Ports: []corev1.ContainerPort{{
 							ContainerPort: 11211,
-							Name:          "kubedge",
+							Name:          "arpscan",
 						}},
 					}},
 				},
