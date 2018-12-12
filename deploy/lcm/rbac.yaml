@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kubedge-operator
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: kubedge-operator
+subjects:
+- kind: ServiceAccount
+  name: kubedge-operator
+roleRef:
+  kind: Role
+  name: kubedge-operator
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  creationTimestamp: null
+  name: kubedge-operator
+rules:
+- apiGroups:
+  - "*"
+  resources:
+  - '*'
+  verbs:
+  - '*'
