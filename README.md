@@ -30,11 +30,11 @@ vi pkg/controller/kubedge/kubedge_controller.go
 
 ```bash
 kubectl create -f deploy/crds/arpscan_v1alpha1_kubedge_crd.yaml 
-kubectl create -f deploy/service_account.yaml 
-kubectl create -f deploy/role
-kubectl create -f deploy/role.yaml 
-kubectl create -f deploy/role_binding.yaml 
-kubectl create -f deploy/operator.yaml 
+kubectl create -f deploy/operator/service_account.yaml 
+kubectl create -f deploy/operator/role
+kubectl create -f deploy/operator/role.yaml 
+kubectl create -f deploy/operator/role_binding.yaml 
+kubectl create -f deploy/operator/operator.yaml 
 ```
 
 ```bash
@@ -103,9 +103,9 @@ kubectl create -f deploy/upstream/manifests/latest/
 ###  Deploy the lcm operator
 
 ```bash
-kubectl create -f deploy/lcm/crd.yaml
-kubectl create -f deploy/lcm/rbac.yaml
-kubectl create -f deploy/lcm/kubedgeoperator.0.0.1.csv.yaml
+kubectl create -f deploy/olm/crd.yaml
+kubectl create -f deploy/olm/rbac.yaml
+kubectl create -f deploy/olm/kubedgeoperator.0.0.1.csv.yaml
 ```
  
 
