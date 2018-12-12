@@ -93,10 +93,11 @@ status:
 ### Install the framework
 
 Install the framework....run it twice
+TODO: Use the helm chart instead
 
 ```bash
-kubectl create -f deploy/upstream/
-kubectl create -f deploy/upstream/
+kubectl create -f deploy/upstream/manifests/latest/
+kubectl create -f deploy/upstream/manifests/latest/
 ```
 
 ###  Deploy the lcm operator
