@@ -1,5 +1,5 @@
 #!/bin/bash -x
-export COMPONENT=kubedge-operator
+export COMPONENT=kubedge-operator-go
 export VERSION=0.0.1
 export DHUBREPO="hack4easy/$COMPONENT-dev"
 export DOCKER_NAMESPACE="hack4easy"

@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/kubedge/kubedge-operator/pkg/controller/kubedge"
+	"github.com/kubedge/kubedge-operator-go/pkg/controller/kubedge"
 )
 
 func init() {

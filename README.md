@@ -1,13 +1,13 @@
 # operator-framework usage for kubedge
 
-## Initialization of kubedge-operator
+## Initialization of kubedge-operator-go
 
 ```bash
-git remote add origin git@github.com:kubedge/kubedge-operator
+git remote add origin git@github.com:kubedge/kubedge-operator-go
 git push -u origin master
 ```
 
-## Coding the kubedge-operator
+## Coding the kubedge-operator-go
 
 ```bash
 operator-sdk add api --api-version=arpscan.kubedge.cloud/v1alpha1 --kind=Kubedge
@@ -19,10 +19,10 @@ vi pkg/controller/kubedge/kubedge_controller.go
 ```
 
 
-## Building the kubedge-operator
+## Building the kubedge-operator-go
 
 ``bash
-operator-sdk build kubedge/kubedge-operator-dev:v0.0.1
+# operator-sdk build kubedge/kubedge-operator-go-dev:v0.0.1
 ./manualbuild.sh 
 ```
 

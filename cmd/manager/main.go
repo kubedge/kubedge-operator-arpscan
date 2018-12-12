@@ -7,8 +7,8 @@ import (
 	"os"
 	"runtime"
 
-	"github.com/kubedge/kubedge-operator/pkg/apis"
-	"github.com/kubedge/kubedge-operator/pkg/controller"
+	"github.com/kubedge/kubedge-operator-go/pkg/apis"
+	"github.com/kubedge/kubedge-operator-go/pkg/controller"
 	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
 	"github.com/operator-framework/operator-sdk/pkg/leader"
 	"github.com/operator-framework/operator-sdk/pkg/ready"

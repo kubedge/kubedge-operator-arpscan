@@ -33,9 +33,9 @@ spec:
             spec:
               containers:
                 - name: sao
-                  image: hack4easy/kubedge-operator-dev:v0.0.1
+                  image: hack4easy/kubedge-operator-go-dev:v0.0.1
                   command: 
-                  - /usr/local/bin/kubedge-operator
+                  - /usr/local/bin/kubedge-operator-go
                   ports:
                   - containerPort: 8080
                     protocol: TCP

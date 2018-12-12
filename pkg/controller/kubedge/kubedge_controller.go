@@ -4,7 +4,7 @@ import (
 	"context"
 	"reflect"
 
-	arpscanv1alpha1 "github.com/kubedge/kubedge-operator/pkg/apis/arpscan/v1alpha1"
+	arpscanv1alpha1 "github.com/kubedge/kubedge-operator-go/pkg/apis/arpscan/v1alpha1"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
