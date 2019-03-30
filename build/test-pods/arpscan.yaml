@@ -1,0 +1,22 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arpscan
+  namespace: default
+spec:
+  replicas: 1
+  selectors:
+  template:
+     spec:
+       containers:
+       - name: arpscan
+         image: hack4easy/arpscan-amd64:latest
+         imagePullPolicy: IfNotPresent
+         command:
+         - /bin/arpscan
+         - "eth0"
+         ports:
+         - - containerPort: 112111
+           - name: arpscan
+  restartPolicy: Always

@@ -1,7 +1,18 @@
 FROM alpine:3.8
 
-RUN apk upgrade --update --no-cache
+ENV OPERATOR=/usr/local/bin/kubedge-arpscan-operator \
+    USER_UID=1001 \
+    USER_NAME=kubedge-arpscan-operator
 
-USER nobody
+# install operator binary
+COPY build/_output/bin/kubedge-arpscan-operator ${OPERATOR}
 
-ADD build/_output/bin/kubedge-operator-go /usr/local/bin/kubedge-operator-go
+COPY build/bin /usr/local/bin
+
+RUN  /usr/local/bin/user_setup
+
+COPY build/test-pods /opt/kubedge-operators/test-pods
+
+ENTRYPOINT ["/usr/local/bin/entrypoint"]
+
+USER ${USER_UID}
