@@ -8,5 +8,5 @@ spec:
   targetState: deployed
   source:
     type: local
-    location: /opt/kubedge-operators/test-pods/busybox.yaml
+    location: /opt/kubedge-operators/test-pods/arpscan.yaml
     subpath: .

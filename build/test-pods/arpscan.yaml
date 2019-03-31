@@ -6,17 +6,21 @@ metadata:
   namespace: default
 spec:
   replicas: 1
-  selectors:
+  selector:
+    matchLabels:
+      name: arpscan
   template:
-     spec:
-       containers:
-       - name: arpscan
-         image: hack4easy/arpscan-amd64:latest
-         imagePullPolicy: IfNotPresent
-         command:
-         - /bin/arpscan
-         - "eth0"
-         ports:
-         - - containerPort: 112111
-           - name: arpscan
-  restartPolicy: Always
+    metadata:
+      labels:
+        name: arpscan
+    spec:
+      # serviceAccountName: arpscan
+      containers:
+      - name: arpscan
+        image: hack4easy/arpscan-amd64:latest
+        command:
+        - /bin/arpscan
+        - "eth0"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 11211
