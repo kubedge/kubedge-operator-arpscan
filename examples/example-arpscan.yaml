@@ -19,7 +19,7 @@ spec:
       spec:
         containers:
         - name: arpscan
-          image: hack4easy/arpscan-amd64:latest
+          image: hack4easy/arpscan-dev:latest
           imagePullPolicy: IfNotPresent
           command: ["/bin/arpscan"]
           args: ["eth0"]
