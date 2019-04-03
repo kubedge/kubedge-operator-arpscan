@@ -1,12 +1,30 @@
 apiVersion: kubedgeoperators.kubedge.cloud/v1alpha1
 kind: Arpscan
 metadata:
-  name: test-phase
+  name: kubedge-arpscan-scanners
 spec:
-  openstackServiceName: testservice
-  targetOpenstackServiceVersion: moc.version.to.test.to
   targetState: deployed
   source:
     type: local
     location: /opt/kubedge-operators/test-pods/arpscan.yaml
-    subpath: .
+  scanners:
+    replicas: 1
+    selector:
+      matchLabels:
+        name: kubedge-arpscan-scanners
+    template:
+      metadata:
+        labels:
+          name: kubedge-arpscan-scanners
+      spec:
+        containers:
+        - name: arpscan
+          image: hack4easy/arpscan-dev:latest
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/arpscan"]
+          args: ["eth0"]
+          ports:
+            - containerPort: 8082
+          securityContext:
+             privileged: true
+             allowPrivilegeEscalation: true
