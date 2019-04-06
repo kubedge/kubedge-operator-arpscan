@@ -6,7 +6,7 @@ spec:
   targetState: deployed
   source:
     type: local
-    location: /opt/kubedge-operators/test-pods/arpscan.yaml
+    location: /opt/kubedge-operators/arpscan-templates/arpscan.yaml
   scanners:
     replicas: 1
     selector:
