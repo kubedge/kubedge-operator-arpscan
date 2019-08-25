@@ -13,7 +13,7 @@ spec:
       labels:
         name: kubedge-arpscan-operator
     spec:
-      serviceAccountName: kubedge-operator
+      serviceAccountName: kubedge-arpscan-operator
       containers:
         - name: kubedge-arpscan-operator
           # Replace this with the built image name

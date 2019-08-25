@@ -24,9 +24,6 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/labels"
-
-	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 type rollbackmanager struct {
@@ -76,35 +73,6 @@ func (m rollbackmanager) ReconcileResource(ctx context.Context) (*av1.SubResourc
 // UninstallResource delete K8s sub resources (Workflow, Job, ....) attached to this Arpscan CR
 func (m rollbackmanager) UninstallResource(ctx context.Context) (*av1.SubResourceList, error) {
 	return m.BaseUninstallResource(ctx)
-}
-
-// reconciling
-func (m rollbackmanager) Sync2(instance *av1.Arpscan) error {
-
-	// Update the Kubedge status with the pod names
-	// List the pods for this kubedge's deployment
-	podList := &corev1.PodList{}
-	labelSelector := labels.SelectorFromSet(m.labelsForKubedge(instance.Name))
-	listOps := &client.ListOptions{Namespace: instance.Namespace, LabelSelector: labelSelector}
-	err := m.KubeClient.List(context.TODO(), listOps, podList)
-	if err != nil {
-		log.Error(err, "failed to list pods", "Namespace", instance.Namespace, "Name", instance.Name)
-		return err
-	}
-	// JEB podNames := m.getPodNames(podList.Items)
-	_ = m.getPodNames(podList.Items)
-
-	// Update status.Nodes if needed
-	// JEB if !reflect.DeepEqual(podNames, instance.Status.Nodes) {
-	// JEB 		instance.Status.Nodes = podNames
-	// JEB 		err := m.KubeClient.Update(context.TODO(), instance)
-	// JEB 		if err != nil {
-	// JEB 			log.Error(err, "failed to update Kubedge status")
-	// JEB 			return err
-	// JEB 		}
-	// JEB 	}
-
-	return nil
 }
 
 // deploymentForKubedge returns a kubedge Deployment object

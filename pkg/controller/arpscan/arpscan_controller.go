@@ -53,7 +53,7 @@ func newArpscanReconciler(mgr manager.Manager) reconcile.Reconciler {
 		KubedgeBaseReconciler: bcontroller.KubedgeBaseReconciler{
 			Client:         mgr.GetClient(),
 			Scheme:         mgr.GetScheme(),
-			Recorder:       mgr.GetRecorder("arpscan-recorder"),
+			Recorder:       mgr.GetEventRecorderFor("arpscan-recorder"),
 			ManagerFactory: arpscanmgr.NewManagerFactory(mgr),
 			// reconcilePeriod: flags.ReconcilePeriod,
 		},
