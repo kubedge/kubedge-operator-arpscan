@@ -31,10 +31,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/event"
 	crthandler "sigs.k8s.io/controller-runtime/pkg/handler"
+	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 	crtpredicate "sigs.k8s.io/controller-runtime/pkg/predicate"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
-	logf "sigs.k8s.io/controller-runtime/pkg/runtime/log"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 )
 
@@ -157,7 +157,7 @@ const (
 // Note: The Controller will requeue the Request to be processed again if the
 // returned error is non-nil or Result.Requeue is true, otherwise upon
 // completion it will remove the work from the queue.
-func (r *ArpscanReconciler) Reconcile(request reconcile.Request) (reconcile.Result, error) {
+func (r *ArpscanReconciler) Reconcile(ctx context.Context, request reconcile.Request) (reconcile.Result, error) {
 	reclog := arpscanlog.WithValues("namespace", request.Namespace, "arpscan", request.Name)
 	reclog.Info("Received a request")
 
