@@ -1,7 +1,7 @@
 
 # Image URL to use all building/pushing image targets
 COMPONENT        ?= kubedge-arpscan-operator
-VERSION_V1       ?= 0.1.19
+VERSION_V1       ?= 0.1.21
 DHUBREPO_DEV     ?= kubedge1/${COMPONENT}-dev
 DHUBREPO_AMD64   ?= kubedge1/${COMPONENT}-amd64
 DHUBREPO_ARM32V7 ?= kubedge1/${COMPONENT}-arm32v7
