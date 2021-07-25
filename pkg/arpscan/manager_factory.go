@@ -75,11 +75,16 @@ func (f managerFactory) NewArpscanManager(r *av1.Arpscan) bmgr.KubedgeResourceMa
 
 	return &rollbackmanager{
 		KubedgeBaseManager: bmgr.KubedgeBaseManager{
-			KubeClient:     f.kubeClient,
-			Renderer:       bmgr.NewKubedgeBaseRenderer(ownerRefs, "arpscan", renderFiles, renderValues),
-			Source:         r.Spec.Source,
-			PhaseName:      r.GetName(),
-			PhaseNamespace: r.GetNamespace()},
+			KubeClient:              f.kubeClient,
+			Renderer:                bmgr.NewKubedgeBaseRenderer(ownerRefs, "arpscan", renderFiles, renderValues),
+			OwnerRefs:               ownerRefs,
+			PhaseName:               r.GetName(),
+			PhaseNamespace:          r.GetNamespace(),
+			Source:                  r.Spec.Source,
+			IsInstalledFlag:         false,
+			IsUpdateRequiredFlag:    false,
+			DeployedSubResourceList: nil,
+		},
 
 		spec:   r.Spec,
 		status: &r.Status,
