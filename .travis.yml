@@ -3,10 +3,16 @@ sudo: true
 language: go
 
 go:
-  - "1.16.x"
+  - "1.17.x"
 
-service:
+services:
   - docker
+
+os:
+  - linux
+
+dist:
+  - focal
 
 env:
   - GO111MODULE=on
@@ -18,16 +24,16 @@ jobs:
     - stage: build docker image
       script:
       - export DHEALTHREPO=$DOCKER_NAMESPACE/kubedge-arpscan-operator-dev
-      - export VERSION=v0.1.21
+      - export VERSION=v0.1.0
       - GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/_output/bin/kubedge-arpscan-operator -gcflags all=-trimpath=${GOPATH} -asmflags all=-trimpath=${GOPATH} -tags=v1 ./cmd/...
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - docker build -t $DHEALTHREPO:$VERSION -f build/Dockerfile .
       - docker tag $DHEALTHREPO:$VERSION $DHEALTHREPO:latest
       - docker tag $DHEALTHREPO:$VERSION $DHEALTHREPO:travis-$TRAVIS_BUILD_NUMBER
-      - docker push $DHEALTHREPO
+      - docker push $DHEALTHREPO -a
     - stage: test docker image
       script:
       - export DHEALTHREPO=$DOCKER_NAMESPACE/kubedge-arpscan-operator-dev
-      - export VERSION=v0.1.21
+      - export VERSION=v0.1.0
       - docker run -d --name test_arpscan $DHEALTHREPO:$VERSION
       - docker ps | grep -q test_arpscan
