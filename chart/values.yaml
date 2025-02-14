@@ -21,7 +21,7 @@ release_group: null
 
 images:
   tags:
-    operator: kubedge1/kubedge-arpscan-operator:v0.2.20
+    operator: kubedge1/kubedge-arpscan-operator:v0.2.0
   pull_policy: "IfNotPresent"
 
 labels: null
