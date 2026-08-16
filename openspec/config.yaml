@@ -1,0 +1,29 @@
+schema: spec-driven
+
+context: |
+  Role: CONSUMER in the kubedge OPERATOR family. Reconciles the Arpscan CRD and imports
+  the shared code from kubedge-operator-base. Near-clone of kubedge-operator-ecds on the
+  Go side; differs by domain kind + deployed workload.
+
+  Dependency (by convention — OpenSpec has no cross-repo link):
+    - Compile-time: consumes github.com/kubedge/kubedge-operator-base capabilities
+      shared-crd-kinds (Arpscan type + common model), kubedgemanager-engine, base-reconciler.
+      CURRENT pin v0.1.29-kubedge.20240602 → REALIGN to v0.1.36-kubedge.20260815.
+    - Runtime/deploy (Note 15): the Arpscan CR deploys `hack4easy/arpscan-<arch>:<ver>`.
+      There is **no `kubedge-sim-arpscan` repo**; the likely workload source is the
+      `arpscan/` sub-module inside kubesim_base (a standalone arpscan binary) — confirm
+      before writing a deploy-sim/run-smoke spec. Simplest workload of the family.
+
+  Tech / build:
+    - K8s operator, Go, legacy operator-sdk-v0 layout; PROJECT version "1".
+    - Verify with raw `go build/vet/test ./...`. Same `make generate` landmines as ecds
+      (removed `crd:trivialVersions=true` + `/usr/local/kubebuilder/bin`) → standardize-codegen.
+    - Images: arm64 via buildx multi-arch; run gate = deploy → confirm start → undeploy.
+
+  Bring-up order: realign-to-base FIRST, then adopt-go-ci, standardize-codegen,
+  buildx-multiarch-image, container-run-smoke, test-coverage-uplift.
+
+rules:
+  spec:
+    - Describe CURRENT behavior; do not spec aspirational features.
+    - The arpscan workload source (kubesim_base/arpscan?) is unconfirmed — verify before speccing.
