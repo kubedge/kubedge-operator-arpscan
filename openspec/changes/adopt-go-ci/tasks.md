@@ -1,7 +1,7 @@
 # Tasks — adopt-go-ci
 
-- [ ] From the meta session, run `/alemax:update-skills` so the class-M set (incl. `ci.yml`) is staged for this repo.
-- [ ] In this repo's session, run `/alemax:complete-update` to apply the update branch onto the working branch.
-- [ ] Confirm `.github/workflows/ci.yml` present and its jobs gate on `go.mod`.
-- [ ] Trial push the branch; confirm `go-build`/`go-vet`/`go-test`/`golangci-lint` are green.
-- [ ] Confirm the rest of class-M landed: `.editorconfig`, `.gitattributes`, `.github/*`, `dependabot.yml`, `.pre-commit-config.yaml`, `bin/set-secret.sh`.
+- [x] From the meta session, `/alemax:update-skills` staged the class-M set (incl. `ci.yml`) — delivered as `meta-broadcast/deliver-class-m-templates-ciyml--hygiene`.
+- [x] In this repo, `/alemax:complete-update` applied the broadcast onto `main` (Phase 1).
+- [x] `.github/workflows/ci.yml` present; its Go jobs gate on `go.mod` (graft's fixed ci.yml supersedes the stale broadcast copy).
+- [ ] Trial push → confirm `go-build`/`go-vet`/`go-test`/`golangci-lint` green — happens on the PR push (CI run).
+- [x] Rest of class-M landed: `.editorconfig`, `.gitattributes`, `.github/*`, `dependabot.yml`, `.pre-commit-config.yaml`, `bin/set-secret.sh`.

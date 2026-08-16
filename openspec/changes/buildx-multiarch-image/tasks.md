@@ -1,7 +1,7 @@
 # Tasks — buildx-multiarch-image
 
-- [ ] Confirm buildx + a builder are available (docker buildx ls); colima on Apple-Silicon.
-- [ ] Add a `docker-buildx` Makefile target: `docker buildx build --platform linux/arm64 -t <image>:<tag> --push` (add `,linux/amd64` only if amd64 is still a target).
-- [ ] Verify the resulting image is a manifest list (`docker buildx imagetools inspect <image>:<tag>`).
-- [ ] Retire the arch-suffixed `docker-build-v1`/`docker-push-v1` targets and image names.
-- [ ] Confirm the image runs on arm64 (Pi armv8 and/or Apple-Silicon).
+- [x] Confirm buildx + a builder are available (colima's docker on K8S01 provides buildx).
+- [x] `docker-buildx` Makefile target present: `docker buildx build --platform linux/arm64,linux/amd64 -f build/Dockerfile -t <img> -t <repo>:latest --push`. `build/Dockerfile` cross-compiles per `TARGETOS/TARGETARCH` (fixes the old per-arch prebuilt-binary bug).
+- [ ] `docker buildx imagetools inspect <image>:<tag>` → manifest list — deferred: needs a registry push (`make docker-buildx`), gated on `kubedge1` DockerHub creds.
+- [x] Retired the arch-suffixed `docker-build-v1`/`docker-push-v1` targets and image names.
+- [x] Image runs on arm64: smoke built the operator image via buildx and ran it on an arm64 kind node (operator pod 1/1 Ready).
