@@ -23,7 +23,11 @@ RELEASE="${RELEASE:-kubedge-arpscan-operator}"
 VERSION="${VERSION:-0.2.0}"
 IMG="${IMG:-kubedge1/kubedge-arpscan-operator:v${VERSION}}"
 NODE="${CLUSTER}-control-plane"
-COMPONENTS=(businesslogic enrichment frontend loadbalancer platform)
+# arpscan reconciles its CR into a single Deployment named `arpscan` (rendered from the
+# operator image's /opt/kubedge-operators/arpscan-templates/arpscan.yaml).
+WORKLOAD_DEPLOY="${WORKLOAD_DEPLOY:-arpscan}"
+CR_NAME="${CR_NAME:-kubedge-arpscan-scanners}"
+CR_FILE="${CR_FILE:-examples/example-arpscan.yaml}"
 
 # colima's docker socket, so kind and buildx talk to the same daemon.
 COLIMA_SOCK="${HOME}/.config/colima/default/docker.sock"
@@ -72,36 +76,44 @@ deploy() {
 }
 
 apply_cr_and_assert() {
-  log "applying examples/arpscan.yaml"
-  kubectl apply -f examples/arpscan.yaml -n "$NAMESPACE"
+  log "applying ${CR_FILE}"
+  kubectl apply -f "$CR_FILE" -n "$NAMESPACE"
 
-  log "waiting for Arpscan to report satisfied"
+  log "waiting for Arpscan ${CR_NAME} to report satisfied"
   local satisfied=""
   for _ in $(seq 1 30); do
-    satisfied="$(kubectl get arpscan kubedge-arpscan-cluster -n "$NAMESPACE" \
+    satisfied="$(kubectl get arpscan "$CR_NAME" -n "$NAMESPACE" \
       -o jsonpath='{.status.satisfied}' 2>/dev/null || true)"
     [ "$satisfied" = "true" ] && break
     sleep 2
   done
   if [ "$satisfied" != "true" ]; then
     echo "FAIL: Arpscan not satisfied after wait (satisfied=${satisfied:-<none>})" >&2
-    kubectl get arpscan kubedge-arpscan-cluster -n "$NAMESPACE" -o yaml >&2 || true
+    kubectl get arpscan "$CR_NAME" -n "$NAMESPACE" -o yaml >&2 || true
     exit 1
   fi
 
-  log "asserting component StatefulSets are Ready"
-  local c
-  for c in "${COMPONENTS[@]}"; do
-    kubectl rollout status "statefulset/${c}" -n "$NAMESPACE" --timeout=120s
-  done
+  # The operator-reconcile gate: satisfied=true means the operator applied its template,
+  # so the workload Deployment must exist. We do NOT hard-assert the scanner pods reach
+  # Ready: the rendered `arpscan` container runs the external image hack4easy/arpscan-*
+  # (amd64-only, privileged, needs eth0) which will not run on an arm64 kind node. Its
+  # readiness is a property of that external image, not of this operator.
+  log "asserting workload Deployment '${WORKLOAD_DEPLOY}' was created by the operator"
+  kubectl get "deployment/${WORKLOAD_DEPLOY}" -n "$NAMESPACE" >/dev/null || {
+    echo "FAIL: operator reported satisfied but Deployment '${WORKLOAD_DEPLOY}' is absent" >&2
+    exit 1
+  }
+  # Best-effort rollout wait; report but tolerate the external-image case.
+  kubectl rollout status "deployment/${WORKLOAD_DEPLOY}" -n "$NAMESPACE" --timeout=60s \
+    || log "NOTE: '${WORKLOAD_DEPLOY}' not Ready — expected when the external scanner image can't run on this node arch"
 
-  log "SMOKE PASS — operator reconciled Arpscan; all components Ready"
-  kubectl get arpscan,statefulset -n "$NAMESPACE"
+  log "SMOKE PASS — operator came up, reconciled Arpscan to satisfied, and created the workload"
+  kubectl get arpscan,deployment,pod -n "$NAMESPACE"
 }
 
 teardown() {
   log "removing sample CR + helm release"
-  kubectl delete -f examples/arpscan.yaml -n "$NAMESPACE" --ignore-not-found --timeout=120s || true
+  kubectl delete -f "$CR_FILE" -n "$NAMESPACE" --ignore-not-found --timeout=120s || true
   helm uninstall "$RELEASE" --namespace "$NAMESPACE" 2>/dev/null || true
 }
 
