@@ -18,6 +18,7 @@ import (
 	"context"
 	"fmt"
 	"reflect"
+	"time"
 
 	arpscanmgr "github.com/kubedge/kubedge-operator-arpscan/pkg/arpscan"
 	av1 "github.com/kubedge/kubedge-operator-base/pkg/apis/kubedgeoperators/v1alpha1"
@@ -41,6 +42,10 @@ import (
 
 var arpscanlog = logf.Log.WithName("arpscan-controller")
 
+// finalizerRequeueDelay requeues after a finalizer update, which does not bump
+// metadata.generation and so triggers no watch event of its own.
+const finalizerRequeueDelay = time.Second
+
 // AddArpscanController creates a new Arpscan Controller and adds it to
 // the Manager. The Manager will set fields on the Controller and Start it when
 // the Manager is Started.
@@ -52,9 +57,11 @@ func AddArpscanController(mgr manager.Manager) error {
 func newArpscanReconciler(mgr manager.Manager) reconcile.Reconciler {
 	r := &ArpscanReconciler{
 		KubedgeBaseReconciler: bcontroller.KubedgeBaseReconciler{
-			Client:         mgr.GetClient(),
-			Scheme:         mgr.GetScheme(),
-			Recorder:       mgr.GetEventRecorderFor("arpscan-recorder"),
+			Client: mgr.GetClient(),
+			Scheme: mgr.GetScheme(),
+			// KubedgeBaseReconciler.Recorder is a record.EventRecorder; the newer
+			// GetEventRecorder returns an events.EventRecorder, which the base cannot take.
+			Recorder:       mgr.GetEventRecorderFor("arpscan-recorder"), //nolint:staticcheck // see above
 			ManagerFactory: arpscanmgr.NewManagerFactory(mgr),
 			// reconcilePeriod: flags.ReconcilePeriod,
 		},
@@ -187,7 +194,7 @@ func (r *ArpscanReconciler) Reconcile(ctx context.Context, request reconcile.Req
 	var shouldRequeue bool
 	if shouldRequeue, err = r.updateFinalizers(instance); shouldRequeue {
 		// Need to requeue because finalizer update does not change metadata.generation
-		return reconcile.Result{Requeue: true}, err
+		return reconcile.Result{RequeueAfter: finalizerRequeueDelay}, err
 	}
 
 	if err := r.ensureSynced(mgr, instance); err != nil {
@@ -201,7 +208,7 @@ func (r *ArpscanReconciler) Reconcile(ctx context.Context, request reconcile.Req
 	if instance.IsDeleted() {
 		if shouldRequeue, err = r.deleteArpscan(mgr, instance); shouldRequeue {
 			// Need to requeue because finalizer update does not change metadata.generation
-			return reconcile.Result{Requeue: true}, err
+			return reconcile.Result{RequeueAfter: finalizerRequeueDelay}, err
 		}
 		return reconcile.Result{}, err
 	}

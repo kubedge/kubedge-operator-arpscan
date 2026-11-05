@@ -20,10 +20,6 @@ import (
 
 	av1 "github.com/kubedge/kubedge-operator-base/pkg/apis/kubedgeoperators/v1alpha1"
 	bmgr "github.com/kubedge/kubedge-operator-base/pkg/kubedgemanager"
-
-	appsv1 "k8s.io/api/apps/v1"
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type rollbackmanager struct {
@@ -56,63 +52,4 @@ func (m rollbackmanager) ReconcileResource(ctx context.Context) (*av1.SubResourc
 // UninstallResource delete K8s sub resources (Workflow, Job, ....) attached to this Arpscan CR
 func (m rollbackmanager) UninstallResource(ctx context.Context) (*av1.SubResourceList, error) {
 	return m.BaseUninstallResource(ctx)
-}
-
-// deploymentForKubedge returns a kubedge Deployment object
-func (m rollbackmanager) deploymentForKubedge(instance *av1.Arpscan) *appsv1.Deployment {
-	// size := instance.Spec.Size
-	// if *found.Spec.Replicas != size
-
-	ls := m.labelsForKubedge(instance.Name)
-	// replicas := instance.Spec.Size
-	replicas := int32(1)
-
-	dep := &appsv1.Deployment{
-		TypeMeta: metav1.TypeMeta{
-			APIVersion: "apps/v1",
-			Kind:       "Deployment",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      instance.Name,
-			Namespace: instance.Namespace,
-		},
-		Spec: appsv1.DeploymentSpec{
-			Replicas: &replicas,
-			Selector: &metav1.LabelSelector{
-				MatchLabels: ls,
-			},
-			Template: corev1.PodTemplateSpec{
-				ObjectMeta: metav1.ObjectMeta{
-					Labels: ls,
-				},
-				Spec: corev1.PodSpec{
-					Containers: []corev1.Container{{
-						Image:   "hack4easy/arpscan-amd64:latest",
-						Name:    "arpscan",
-						Command: []string{"/bin/arpscan", "eth0"},
-						Ports: []corev1.ContainerPort{{
-							ContainerPort: 11211,
-							Name:          "arpscan",
-						}},
-					}},
-				},
-			},
-		},
-	}
-	return dep
-}
-
-// labelsForKubedge returns the labels for selecting the resources
-// belonging to the given kubedge CR name.
-func (m rollbackmanager) labelsForKubedge(name string) map[string]string {
-	return map[string]string{"app": "kubedge", "kubedge_cr": name}
-}
-
-// getPodNames returns the pod names of the array of pods passed in
-func (m rollbackmanager) getPodNames(pods []corev1.Pod) []string {
-	var podNames []string
-	for _, pod := range pods {
-		podNames = append(podNames, pod.Name)
-	}
-	return podNames
 }
